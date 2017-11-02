@@ -8,18 +8,16 @@ class level extends StaticAnnotation {
 
   inline def apply(defn: Any): Any = meta {
 
-    def checkLevel(stats: Seq[Stat]): Long = {
+    def checkLevel(stats: Seq[Stat]): Int = {
       stats.collect {
-        //                case v@Defn.Val(_, List(patVar: Pat.Var.Term), _, longValue: Lit.Long) if patVar.....value == "level" => longValue.value
-        case _ => 2L
-      }.headOption.getOrElse(-1L)
+        case Defn.Val(_, Seq(patVar: Pat.Var.Term), _, number: Lit.Int) if patVar.name.value == "level" => number.value
+      }.headOption.getOrElse(-1)
     }
 
-    def checkMoney(stats: Seq[Stat]): Long = {
+    def checkMoney(stats: Seq[Stat]): Int = {
       stats.collect {
-        //        case v@Defn.Val(_, List(patVar: Pat.Var), _, longValue: Lit.Long) if patVar...value == "money" => longValue.value
-        case _ => 0L
-      }.headOption.getOrElse(-1L)
+        case Defn.Val(_, Seq(patVar: Pat.Var.Term), _, number: Lit.Int) if patVar.name.value == "money" => number.value
+      }.headOption.getOrElse(-1)
     }
 
     defn match {
@@ -29,16 +27,11 @@ class level extends StaticAnnotation {
 
         val updatedStats =
           Seq(
-            s"val level = $level".parse[Stat].get,
-            s"val money = $money".parse[Stat].get,
+            s"val level = ${level + 1}".parse[Stat].get,
+            s"val money = ${money + 50}".parse[Stat].get,
           )
 
         obj.copy(templ = template.copy(stats = Some(updatedStats)))
-
-      //          template.stats.fold(defn) {
-      //            objectBody =>
-      //              obj.copy(templ = template)
-      //          }
       case _ =>
         println(defn.structure)
         abort("@Improved must annotate an object")
