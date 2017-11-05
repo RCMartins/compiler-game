@@ -1,6 +1,7 @@
 scalaVersion := "2.12.2"
 
 libraryDependencies += "org.scalameta" %% "scalameta" % "1.8.0"
+libraryDependencies += "org.scalameta" %% "contrib" % "1.8.0"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1"
 
 resolvers += Resolver.sonatypeRepo("releases")
